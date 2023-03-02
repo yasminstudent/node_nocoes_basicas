@@ -1,0 +1,256 @@
+---------- Visão geral de funcionamento do Node ----------
+node = javascript no backend
+- usamos js
+- usamos recursos de js p/ backend (ex: process...)
+    x
+javascript no navegador
+- usamos js
+- usamos recursos de js p/ navegador (ex: window, document...)
+
+---------- Criando Primeiro Projeto ----------
+Entrar na pasta desejada e rodar o comando:
+npm init
+ou npm init -y
+
+---------- Instalando o Typescript no projeto ----------
+Comando para instalar o typescript: npm install -g typescript
+Iniciando arquivo de configuração: tsc --init
+
+Caso o comando acima dê erro:
+Opa....faz o seguinte, abre o powerShell do windows como administrador e da
+ Set-ExecutionPolicy Unrestricted
+dai tu responde SIM, depoiis tenta, vai dar certo.
+
+---------- Configurando o Typescript ----------
+Mudanças feitas:
+    "target": "es6"
+    "moduleResolution": "node"
+    "rootDir": "./src"
+    "outDir": "./dist"
+
+Instalando biblioteca p/ autocomplete:
+    npm install --save-dev @types/node
+
+Entendendo a estrutura do projeto:
+Pastas:
+    src -> source (fonte) -> código fonte (código em typescript)
+    dist -> arquivos de distribuição -> código compilado
+    node_modules -> módulos do node
+
+Ligar monitoramento para mudanças de arquivos 
+(p/ ir compilando conforme formos modificando os arquivos da pasta src):
+
+Terminal 1 (na raiz do projeto, onde tem o arquivo package.json): 
+tsc -w
+
+Testar se pegou as mudanças:
+Terminal 2:
+node dist/index.js
+
+---------- Scripts do package.json ----------
+No arquivo package.json podemos adicionar atalhos de comandos, ex:
+
+ "scripts": {
+    "watch-ts": "tsc -w",
+    "start": "node dist/index.js",
+    "exemplo": "comando 1 && comando 2",
+    "exemplo2": "comando 1 && npm run start"
+ },
+
+E então basta executar o comando:
+npm run watch-ts
+npm run start
+etc
+
+---------- Entendendo import/export em CommonJS ----------
+Para trabalhar com + de 1 arquivo (ou módulo, como o node chama)
+
+export -> habilitar para uso em outros arquivos
+    * pode-se exportar string, variaveis, funções etc
+    module.exports.example = nomeDaFuncaoCriadaNoArquivo;
+
+import -> usar determinado arquivo dentro de outro
+    const whatever = require('./NomeDoOutroArquivo');
+    const whatever2 = require('./NomeDoOutroArquivo').example;
+
+    console.log(whatever.example(parametros));
+    console.log(whatever2(parametros));
+
+---------- Entendendo import/export em ES6 ----------
+Para exportar:
+
+export let versao: string = "1.0";
+export function somar(){...}
+
+Para importar:
+import * as Matematica from "./Matematica"; #importa tudo
+    nesse caso para se usar os recursos seria assim:
+    Matematica.somar();
+    Matematica.versao;
+
+import {versao, somar} from "./Matematica";
+    nesse caso para se usar os recursos seria assim:
+    somar();
+    versao;
+
+
+ou pode-se exportar um único objeto:
+export default {
+    nomeQueEuQueroChamar: nomeDaFuncaoOuVariavelNoArquivo,
+    seONomeQueEuQueroChamarÉOMesmoNomeQueEstaNoArquivoPodeColocarAssim
+}
+Ex:
+export default {
+    somar,
+    subtrair,
+    numVersao: versao
+}
+
+nesse caso o import e o uso seria assim:
+
+import Matematica from "./Matematica";
+Matematica.somar();
+
+---------- Importando arquivos terceiros ----------
+(Usando bibliotecas)
+
+Exemplo:
+
+Comandos p/ instalar:
+
+npm install validator
+npm install --save-dev @types/validator
+
+(O segundo é um suporte para trabalhar com typescript, mas é necessário instalar a padrão primeiro): 
+
+Importando: import validator from "validator";
+
+Usando: console.log(validator.isIP(ip));
+
+---------- Conhecendo o Nodemon ----------
+É uma biblioteca para trabalhar com node, monitorando mudanças em arquivos
+
+Comando para instalar: npm install -g nodemon
+Comando para usar o nodemon: nodemon dist/index.js
+
+(o arquivo vai rodar toda vez que houver uma mudança)
+
+---------- Usando Nodemon com Typescript ----------
+
+Comando para instalar: npm install -g ts-node
+Essa biblioteca converte o typescript em javascript e dps roda o arquivo javascript
+
+Ao instala-la podemos usar via nodemon:
+nodemon src/index.ts
+
+(Por baixo dos panos ele irá rodar o comando ts-node src/index.ts)
+
+---------- Instalando o Express e criando um servidor ----------
+Express é uma biblioteca que facilita a criação de servidores
+
+comandos usados:
+npm install express        //para instalar a biblioteca
+npm install @types/express //para ter autocomplete
+npm run start-dev
+
+criamos o arquivo src/server.ts
+
+---------- Trabalhando com rotas ----------
+Rota estática:
+
+const server = express();
+
+server.get('/', (req: Request, res: Response) => {
+    res.send("Olá Mundo");
+});
+
+Rota dinâmica: 
+
+server.get('/noticia/:slug', (req: Request, res: Response) => {
+    let slug: string = req.params.slug;
+    res.send(`Notícia: ${slug}`);
+});
+
+server.get('/voo/:origem-:destino', (req: Request, res: Response) => {
+    let {origem, destino} = req.params;
+    res.send(`Voos de ${origem} a ${destino}`);
+});
+
+Podemos criar rotas assim também:
+const HomePage = (req: Request, res: Response) => {
+    res.send("Olá Mundo");
+}
+server.get('/', HomePage);
+
+---------- Pasta pública e arquivos estáticos ----------
+Acessando outros arquivos, ex: imagens, ícones, css...
+
+pasta: public -> ela será acessível ao público
+
+---------- Introduzindo Template Engines ----------
+Para fazermos htmls dinâmicos (receber dados do back) devemos usar alguma biblioteca
+
+Principais bibliotecas p/ isso:
+* PUG
+* EDGE -> adonis usa essa
+* Mustache -> semelhante ao blade do laravel
+* EJS
+
+---------- Instalando e configurando o Mustache ----------
+npm install mustache-express
+npm install --save-dev @types/mustache-express
+
+intalar extensão vs code: Mustache Syntax
+
+editar package.json:
+"scripts": {
+    "start-dev": "nodemon -e ts,json,mustache src/server.ts"
+},
+
+---------- Mustache: Exibindo informações ----------
+Para passar informações p/ a view:
+
+let exemplo: string = 'exemplo 1'
+
+res.render('home', {
+    exemplo,
+    teste: 123,
+    user: {
+        name: 'Yasmin',
+        age: 21
+    }
+})
+
+Para exibir na view:
+{{exemplo}} -> isso exibe: exemplo 1
+{{teste}} -> isso exibe: 123
+{{user.name}} -> isso exibe: Yasmin
+
+---------- Mustache: Exibição condicional ----------
+Não é possível usar Operadores de Comparação (>, >=, < etc) nas views
+Apenas conseguimos verificar se uma variável é true ou não
+
+Para fazer isso:
+{{#showMessageMinor}}
+    <h1> Você é menor de idade </h1>
+{{/showMessageMinor}}
+
+---------- Mustache: Else ----------
+Para fazer isso:
+{{#showMessageMinor}}
+    <h1> Você é menor de idade </h1>
+{{/showMessageMinor}}
+{{^showMessageMinor}}
+    <h1> Você é maior de idade </h1>
+{{/showMessageMinor}}
+
+ {{! Percorrendo um array simples}}
+{{#phrases}}
+    <li>{{.}}</li>
+{{/phrases}}
+{{! Aqui é o else da lista (se não tiver nada nela) }}
+{{^phrases}}
+    <li>Não há vagas</li>
+{{/phrases}}
+
+ADD NOVAS AULAS AQUI (DA 24 A 26)

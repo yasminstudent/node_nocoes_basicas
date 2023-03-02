@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <title> Exibindo listas (loop) </title>
+    </head>
+    <body>
+        <ul> 
+            {{! Percorrendo um array de objetos}}
+            {{#products}}
+                {{! As chaves do objeto se tornam variáveis no loop}}
+                <li>{{name}} - R$ {{price}}</li>
+            {{/products}}
+        </ul>
+
+        <hr/>
+
+        <ul> 
+            {{! Percorrendo um array simples}}
+            {{#phrases}}
+                <li>{{.}}</li>
+            {{/phrases}}
+            {{! Aqui é o else da lista (se não tiver nada nela) }}
+            {{^phrases}}
+                <li>Não há vagas</li>
+            {{/phrases}}
+        </ul>
+    </body>
+</html>

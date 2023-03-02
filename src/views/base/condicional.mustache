@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <title> Condicional </title>
+    </head>
+    <body>
+        {{! Verificando se showMessageMinor tem valor true }}
+        {{#showMessageMinor}}
+            <h1> Você é menor de idade </h1>
+        {{/showMessageMinor}}
+        {{^showMessageMinor}}
+            <h1> Entrei no else </h1>
+        {{/showMessageMinor}}
+
+        {{! Verificando se showMessageAdults tem valor true }}
+        {{#showMessageAdults}}
+            <h1> Você é maior de idade </h1>
+        {{/showMessageAdults}}
+    </body>
+</html>
